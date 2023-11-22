@@ -76,12 +76,12 @@ public class Shop : MonoBehaviour
                 listShopGameObject[14].SetActive(false);
                 PlayerPrefs.SetInt("com.serbull.iaptutorial.lesson20", 1);
                 break;
-            case "com.serbull.iaptutorial.lessonAll22":
+            case "com.serbull.iaptutorial.lessonall22":
                 for (int i = 0; i < listShopGameObject.Count ; i++)
                 {
                     listShopGameObject[i].SetActive(false);
                 }
-                PlayerPrefs.SetInt("com.serbull.iaptutorial.lessonAll22", 1);
+                PlayerPrefs.SetInt("com.serbull.iaptutorial.lessonall22", 1);
                 break;
 
         }
@@ -149,7 +149,7 @@ public class Shop : MonoBehaviour
         {
             listShopGameObject[14].SetActive(false);
         }
-        if (PlayerPrefs.GetInt("com.serbull.iaptutorial.lessonAll22") == 1)
+        if (PlayerPrefs.GetInt("com.serbull.iaptutorial.lessonall22") == 1)
         {
             for (int i = 0; i < listShopGameObject.Count; i++)
             {

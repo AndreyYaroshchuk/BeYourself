@@ -13,7 +13,11 @@ public class LessonOptionUI : MonoBehaviour
 
     public static event EventHandler OnAddLesson;
     public static event EventHandler OnClearLesson;
+    public event EventHandler OnRestartAudio;
+    public event EventHandler OnClickButtonBack;
 
+
+    [SerializeField] private ScrolAudio scrolAudio;
     [SerializeField] private Button buttonPlay;
     [SerializeField] private Button buttonRestartPlay;
     [SerializeField] private Button buttonSave;
@@ -21,7 +25,7 @@ public class LessonOptionUI : MonoBehaviour
     [SerializeField] private Button buttonPaused;
     [SerializeField] private TextMeshProUGUI textLesson;
     [SerializeField] private TextMeshProUGUI textOptionLesson;
-    [SerializeField] private Slider sliders;
+
 
     [SerializeField] private List<MyLessonUI> myLessonListUI;
     [SerializeField] private GameObject myLessonUI;
@@ -39,7 +43,6 @@ public class LessonOptionUI : MonoBehaviour
     public TextMeshProUGUI TextLesson { get => textLesson; set => textLesson = value; }
     public TextMeshProUGUI TextOptionLesson { get => textOptionLesson; set => textOptionLesson = value; }
     public AudioSource AudioSource { get => audioSource; set => audioSource = value; }
-    public Slider Sliders { get => sliders; set => sliders = value; }
     public int NumberLessonButton { get => numberLessonButton; set => numberLessonButton = value; }
 
     private void Start()
@@ -47,7 +50,7 @@ public class LessonOptionUI : MonoBehaviour
         buttonPaused.gameObject.SetActive(false);
         back.onClick.AddListener(() =>
         {
-            audioSource.Pause();
+            OnClickButtonBack?.Invoke(this, EventArgs.Empty);
             buttonSave.gameObject.SetActive(true);
             buttonPlay.gameObject.SetActive(true);
             gameObject.SetActive(false);
@@ -63,7 +66,9 @@ public class LessonOptionUI : MonoBehaviour
         });
         buttonRestartPlay.onClick.AddListener(() =>
         {
-            audioSource.PlayScheduled(0);
+            //OnRestartAudio?.Invoke(this, EventArgs.Empty);
+            //audioSource.PlayScheduled(0);
+            audioSource.time -= 15f;
         });
         buttonPaused.onClick.AddListener(() =>
         {
@@ -77,7 +82,16 @@ public class LessonOptionUI : MonoBehaviour
             AddLesson();
 
         });
+
+        scrolAudio.OnClickScrol += ScrolAudio_OnClickScrol;
     }
+
+    private void ScrolAudio_OnClickScrol(object sender, EventArgs e)
+    {
+        buttonPlay.gameObject.SetActive(false);
+        buttonPaused.gameObject.SetActive(true);
+    }
+
     private void AddLesson()
     {
         if (GetFile(NumberLessonButton) == true)
@@ -90,29 +104,29 @@ public class LessonOptionUI : MonoBehaviour
         }
         for (int i = 0; i < myLessonListUI.Count; i++)
         {
-            
+
             if (myLessonListUI[i].IsFilled == true && GetFile(NumberLessonButton) == false)
             {
-                myLessonListUI[i].IsFilled = false;        
+                myLessonListUI[i].IsFilled = false;
                 buttonSave.GetComponent<Image>().color = new Color(1f, 1f, 1f, 0.5f);
                 SavesFile(NumberLessonButton);
                 OnAddLesson?.Invoke(this, EventArgs.Empty);
                 return;
             }
         }
-        
+
     }
     private void SavesFile(int number)
     {
         switch (countSave)
         {
-            case 0:              
+            case 0:
                 PlayerPrefs.SetInt(SaveFile.Instance.SaveLesson_1(), number);
                 break;
             case 1:
                 PlayerPrefs.SetInt(SaveFile.Instance.SaveLesson_2(), number);
                 break;
-            case 2:    
+            case 2:
                 PlayerPrefs.SetInt(SaveFile.Instance.SaveLesson_3(), number);
                 break;
             case 3:

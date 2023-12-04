@@ -7,6 +7,7 @@ using UnityEngine.UI;
 public class CanvasUI : MonoBehaviour
 {
 
+    private const string SAVE_FILE_SHOW_START_OPTION_UI = "startOptionUI";
 
     [SerializeField] private Button buttonFeedback;
     [SerializeField] private FeedbackUI feedbackUI;
@@ -33,7 +34,15 @@ public class CanvasUI : MonoBehaviour
     private void Awake()
     {
         Application.runInBackground = true;
-        startOptionUI.SetActive(true);
+        if (PlayerPrefs.GetInt(SAVE_FILE_SHOW_START_OPTION_UI) == 0)
+        {
+            startOptionUI.SetActive(true);
+        }
+        else
+        {
+            startOptionUI.SetActive(false);
+        }
+       
         meditationUI.SetActive(false);
         allUI.SetActive(false);
     }
@@ -53,15 +62,31 @@ public class CanvasUI : MonoBehaviour
         {
             Application.OpenURL("https://instagram.com/kateryna_goncha_r?igshid=MzRlODBiNWFlZA==");
         });
+        if(PlayerPrefs.GetInt(SAVE_FILE_SHOW_START_OPTION_UI) == 0)
+        {
+            buttonBuck.onClick.AddListener(() =>
+            {
+                allUI.SetActive(true);
+                startOptionUI.SetActive(false);
+                PlayerPrefs.SetInt(SAVE_FILE_SHOW_START_OPTION_UI, 1);
+                PlayerPrefs.Save();
+            });
+        }
+        else
+        {
+            allUI.SetActive(true);
+        }
+      
+        buttonBuckmeditation.onClick.AddListener(() =>
+        {
+            meditationUI.SetActive(false);
+        });
         buttonBuck.onClick.AddListener(() =>
         {
             allUI.SetActive(true);
             startOptionUI.SetActive(false);
         });
-        buttonBuckmeditation.onClick.AddListener(() =>
-        {
-            meditationUI.SetActive(false);
-        });
+
         LessonOptionUI.OnAddLesson += LessonOptionUI_OnAddLesson;
         LessonOptionUI.OnClearLesson += LessonOptionUI_OnClearLesson;
     }

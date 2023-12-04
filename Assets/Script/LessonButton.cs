@@ -1,6 +1,7 @@
 using System.Collections;
 using System.Collections.Generic;
 using TMPro;
+using Unity.VisualScripting;
 using UnityEngine;
 using UnityEngine.SocialPlatforms;
 using UnityEngine.UI;
@@ -9,7 +10,6 @@ using static System.Net.Mime.MediaTypeNames;
 public class LessonButton : MonoBehaviour
 {
     public static LessonButton Instance;
-
 
     [SerializeField] private Button buttonPlay;
     [SerializeField] private Button buttonPaused;
@@ -20,7 +20,7 @@ public class LessonButton : MonoBehaviour
     [SerializeField] private TMP_Text nameLessonButton;
 
     private AudioClip audioClip = null;
-
+    private AudioSource audioSource;
 
     private bool isPlay;
     private float min;
@@ -60,23 +60,30 @@ public class LessonButton : MonoBehaviour
         _timeLeft = time_; //
         _timerOn = true; //
 
-        min = (Audio.Instance.SetAudioClip(Number).length / 60);
-        sec = (min / 60) * 100;
+       
+      
 
-        text.text = "/ " + (int)min + ":" + (int)sec;
+        //min = (Audio.Instance.SetAudioClip(Number).length / 60);
+        //sec = (min / 60) * 100;
+        //text.text = "/ " + (int)min + ":" + (int)sec;
+        text.text = FormatTime(Audio.Instance.SetAudioClip(Number).length);
+        //audioSource.clip = Audio.Instance.SetAudioClip(Number);
+        //text.text = audioSource.time.ToString();
+
         buttonPaused.gameObject.SetActive(false);
 
         buttonOptionLessonUI.onClick.AddListener(() =>
         {
             if (isPlay == false)
             {
+                //audioSource.loop = true;
                 lessonOptionUI.gameObject.SetActive(true);
                 lessonOptionUI.UpdateButtonSave(Number);
                 lessonOptionUI.TextLesson.text = TextNameLessonButton.text;
                 lessonOptionUI.TextOptionLesson.text = GetLessonOption();
                 lessonOptionUI.AudioSource.clip = Audio.Instance.SetAudioClip(Number);
                 lessonOptionUI.NumberLessonButton = Number;
-
+                //audioSource.ignoreListenerPause = true;
 
             }
         });
@@ -87,43 +94,47 @@ public class LessonButton : MonoBehaviour
                 time_ = Audio.Instance.SetAudioClip(Number).length;
                 _timeLeft = time_;
                 oneClicke = true;
+
             }
            
             Audio.Instance.Play(Audio.Instance.SetAudioClip(Number));
             audioClip = Audio.Instance.SetAudioClip(Number);
             buttonPlay.gameObject.SetActive(false);
             buttonPaused.gameObject.SetActive(true);
+            textVolue.text = Audio.Instance.FormatTime();
             isPlay = true;
         });
         buttonPaused.onClick.AddListener(() =>
         {
 
             timeStop = false;
-
             Audio.Instance.StopPlay();
             buttonPlay.gameObject.SetActive(true);
             buttonPaused.gameObject.SetActive(false);
             isPlay = false;
+          
         });
+      
     }
     private void Update()
     {
 
         if (isPlay == true)
         {
-            if (_timerOn)
-            {
-                if (_timeLeft > 0)
-                {
-                    _timeLeft -= Time.deltaTime;
-                    UpdateTimeText();
-                }
-                else
-                {
-                    _timeLeft = time_;
-                    _timerOn = false;
-                }
-            }
+            textVolue.text = Audio.Instance.FormatTime();
+            //if (_timerOn)
+            //{
+            //    if (_timeLeft > 0)
+            //    {
+            //        _timeLeft -= Time.deltaTime;
+            //        UpdateTimeText();
+            //    }
+            //    else
+            //    {
+            //        _timeLeft = time_;
+            //        _timerOn = false;
+            //    }
+            //}
         }
         ShowButtonPlay();
     }
@@ -135,7 +146,13 @@ public class LessonButton : MonoBehaviour
 
         float minutes = Mathf.FloorToInt(_timeLeft / 60);
         float seconds = Mathf.FloorToInt(_timeLeft % 60);
-        textVolue.text = minutes + ":" + seconds;
+        //textVolue.text = minutes + ":" + seconds;
+    }
+    private string FormatTime(float time)
+    {
+        int minutes = Mathf.FloorToInt(time / 60F);
+        int seconds = Mathf.FloorToInt(time - minutes * 60);
+        return string.Format("{0:0}:{1:00}", minutes, seconds);
     }
 
     public void SetLessonOption(string lessonOption)
@@ -156,4 +173,5 @@ public class LessonButton : MonoBehaviour
             oneClicke = false;   
         }
     }
+
 }

@@ -8,10 +8,13 @@ public class Audio : MonoBehaviour
     public static Audio Instance;
 
 
-    public AudioMixer audioMixer;
+    //public AudioMixer audioMixer;
     [SerializeField] private AudioSource audioSource;
  
     [SerializeField] private List<AudioClip> clipList;
+
+    private float time;
+
 
     private void OnApplicationPause(bool pause)
     {
@@ -24,6 +27,11 @@ public class Audio : MonoBehaviour
     {
         Application.runInBackground = true;
         Instance = this;
+    }
+    private void Start()
+    {
+        audioSource.loop = true;
+        audioSource.ignoreListenerPause = true;
     }
     public AudioClip SetAudioClip(int i)
     {
@@ -42,5 +50,12 @@ public class Audio : MonoBehaviour
     {
         audioSource.Pause();
     }
-    
+    public string FormatTime()
+    {
+        time = audioSource.time;
+        int minutes = Mathf.FloorToInt(time / 60F);
+        int seconds = Mathf.FloorToInt(time - minutes * 60);
+        return string.Format("{0:0}:{1:00}", minutes, seconds);
+    }
+
 }

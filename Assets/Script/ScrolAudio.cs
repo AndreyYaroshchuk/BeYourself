@@ -26,7 +26,7 @@ public class ScrolAudio : MonoBehaviour
 
         textStartTime.text = "/" + FormatTime(audioSource.clip.length);
 
-        lessonOptionUI.OnClickButtonBack += LessonOptionUI_OnClickButtonBack;
+        LessonOptionUI.OnClickButtonBack += LessonOptionUI_OnClickButtonBack;
     }
 
     private void LessonOptionUI_OnClickButtonBack(object sender, System.EventArgs e)
@@ -46,25 +46,6 @@ public class ScrolAudio : MonoBehaviour
         {
             mySlider.value = audioSource.time;
         }
-
-        //if (Input.GetMouseButtonDown(0))
-        //{
-        //    // ѕолучаем позицию мыши в мировых координатах
-        //    Vector3 mousePosition = Camera.main.ScreenToWorldPoint(Input.mousePosition);
-
-        //    // ѕровер€ем, попадает ли позици€ мыши в область слайдера
-        //    if (mySlider.GetComponent<Collider2D>().OverlapPoint(mousePosition))
-        //    {
-        //        isPlay = true;
-        //        audioSource.time = mySlider.value;
-        //        // ќбработка нажати€ на слайдер
-        //        Debug.Log("Ќажатие на слайдер!");
-        //    }
-        //    else
-        //    {
-        //        isPlay = false;
-        //    }
-        //}
     }
     private string FormatTime(float time)
     {
@@ -75,6 +56,11 @@ public class ScrolAudio : MonoBehaviour
 
     public void ScrolEnter()
     {
+        if (Audio.Instance.GetAudioSorece().isPlaying)
+        {
+            Audio.Instance.GetAudioSorece().Stop();
+        }
+
         isPlay = true;
         audioSource.Pause();
         if(isStartScrol == false)
@@ -85,7 +71,14 @@ public class ScrolAudio : MonoBehaviour
     }
     public void ScrolExit()
     {
-        audioSource.time = mySlider.value;
+        if (Audio.Instance.GetAudioSorece().isPlaying)
+        {
+            Audio.Instance.GetAudioSorece().Stop();
+        }
+        if(mySlider.value < audioSource.clip.length)
+        {
+            audioSource.time = mySlider.value;
+        }
         audioSource.Play();
         isPlay = false;
     }

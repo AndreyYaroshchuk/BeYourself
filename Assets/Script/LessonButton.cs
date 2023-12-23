@@ -20,11 +20,9 @@ public class LessonButton : MonoBehaviour
     [SerializeField] private TMP_Text nameLessonButton;
 
     private AudioClip audioClip = null;
-    private AudioSource audioSource;
-
+  
     private bool isPlay;
-    private float min;
-    private float sec;
+ 
 
     public string lessonOption;
     public int number = -1;
@@ -60,31 +58,20 @@ public class LessonButton : MonoBehaviour
         _timeLeft = time_; //
         _timerOn = true; //
 
-       
-      
-
-        //min = (Audio.Instance.SetAudioClip(Number).length / 60);
-        //sec = (min / 60) * 100;
-        //text.text = "/ " + (int)min + ":" + (int)sec;
         text.text = FormatTime(Audio.Instance.SetAudioClip(Number).length);
-        //audioSource.clip = Audio.Instance.SetAudioClip(Number);
-        //text.text = audioSource.time.ToString();
-
+   
         buttonPaused.gameObject.SetActive(false);
 
         buttonOptionLessonUI.onClick.AddListener(() =>
         {
             if (isPlay == false)
             {
-                //audioSource.loop = true;
                 lessonOptionUI.gameObject.SetActive(true);
                 lessonOptionUI.UpdateButtonSave(Number);
                 lessonOptionUI.TextLesson.text = TextNameLessonButton.text;
                 lessonOptionUI.TextOptionLesson.text = GetLessonOption();
                 lessonOptionUI.AudioSource.clip = Audio.Instance.SetAudioClip(Number);
                 lessonOptionUI.NumberLessonButton = Number;
-                //audioSource.ignoreListenerPause = true;
-
             }
         });
         buttonPlay.onClick.AddListener(() =>
@@ -114,8 +101,16 @@ public class LessonButton : MonoBehaviour
             isPlay = false;
           
         });
-      
+        LessonOptionUI.OnClickButtonBack += LessonOptionUI_OnClickButtonBack;
     }
+
+    private void LessonOptionUI_OnClickButtonBack(object sender, System.EventArgs e)
+    {
+        buttonPaused.gameObject.SetActive(false);
+        buttonPlay.gameObject.SetActive(true);
+        Audio.Instance.GetAudioSorece().Stop();
+    }
+
     private void Update()
     {
 

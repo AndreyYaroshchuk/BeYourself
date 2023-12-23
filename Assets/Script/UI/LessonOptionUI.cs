@@ -11,10 +11,11 @@ using UnityEngine.UI;
 public class LessonOptionUI : MonoBehaviour
 {
 
+   
     public static event EventHandler OnAddLesson;
     public static event EventHandler OnClearLesson;
     public event EventHandler OnRestartAudio;
-    public event EventHandler OnClickButtonBack;
+    public static event EventHandler OnClickButtonBack;
 
 
     [SerializeField] private ScrolAudio scrolAudio;
@@ -31,6 +32,8 @@ public class LessonOptionUI : MonoBehaviour
     [SerializeField] private GameObject myLessonUI;
 
     public AudioSource audioSource;
+
+    public AudioSource audioGlobal;
 
     public Sprite spriteButtonSave;
 
@@ -60,6 +63,10 @@ public class LessonOptionUI : MonoBehaviour
         });
         buttonPlay.onClick.AddListener(() =>
         {
+            if (audioGlobal.isPlaying)
+            {
+                audioGlobal.Stop();
+            }
             audioSource.Play();
             buttonPaused.gameObject.SetActive(true);
             buttonPlay.gameObject.SetActive(false);
